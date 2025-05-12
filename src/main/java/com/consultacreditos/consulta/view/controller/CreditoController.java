@@ -12,7 +12,6 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.consultacreditos.consulta.model.Credito;
 import com.consultacreditos.consulta.services.CreditoService;
 import com.consultacreditos.consulta.shared.CreditoDTO;
 import com.consultacreditos.consulta.view.model.CreditoResponse;
