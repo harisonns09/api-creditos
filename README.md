@@ -44,17 +44,22 @@ cd api-creditos
 # Compile e rode a aplicação
 ./mvnw spring-boot:run
 
+```
+
+
 A aplicação estará disponível em:
 📍 http://localhost:8080
 
 🔗 Endpoints Principais
-
+```
 Método	Endpoint	Descrição
 GET	/api/creditos/credito/{id}	Retorna um crédito com base no número
 GET	/api/creditos/{numeroNfse}	Lista os créditos vinculados a uma NFS-e
+```
+
 
 Exemplo de Resposta JSON
-
+```
 {
   "numeroCredito": "123456",
   "numeroNfse": "7891011",
@@ -67,3 +72,4 @@ Exemplo de Resposta JSON
   "valorDeducao": 5000,
   "baseCalculo": 25000
 }
+```
