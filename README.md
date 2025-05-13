@@ -9,7 +9,7 @@ API REST desenvolvida em Java com Spring Boot para consulta de créditos tribut�
 - 🔎 Buscar crédito por número do crédito
 - 🔍 Consultar todos os créditos vinculados a uma NFS-e
 - 📑 Estrutura de dados clara e extensível
-- ✅ Pronta para integração com frontend Angular (ex: [frontend-creditos](https://github.com/harisonns09/frontend-creditos))
+- ✅ Pronta para integração com frontend Angular - [Frontend-creditos](https://github.com/harisonns09/front-api-creditos)
 
 ---
 
