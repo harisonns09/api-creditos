@@ -7,6 +7,8 @@ import com.consultacreditos.consulta.model.Credito;
 
 public class CreditoDTO {
 
+    private static final long serialVersionUID = 1L;
+
     // private Long id;
 	private String numeroCredito;
 	private String numeroNfse;
