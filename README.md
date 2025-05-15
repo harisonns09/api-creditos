@@ -72,3 +72,140 @@ spring.rabbitmq.queue=credito.fila
 spring.rabbitmq.exchange=creditos.exchange
 spring.rabbitmq.routingkey=creditos.routing.key
 ```
+
+Endpoints
+
+Listar créditos por número NFS-e
+```
+GET /api/creditos/{numeroNfse}
+```
+Retorna uma lista de créditos vinculados ao número da NFS-e.
+
+Exemplo de resposta:
+```
+[
+  {
+    "numeroCredito": "123",
+    "numeroNfse": "456",
+    "dataConstituicao": "2023-05-10",
+    "valorIssqn": 100.00,
+    "tipoCredito": "ISSQN",
+    "simplesNacional": "Sim",
+    "aliquota": 2.5,
+    "valorFaturado": 4000.00,
+    "valorDeducao": 0.00,
+    "baseCalculo": 4000.00
+  }
+]
+```
+
+
+Buscar crédito por número de crédito
+
+```GET /api/creditos/credito/{numeroCredito}```
+Retorna um crédito específico pelo número do crédito. Caso encontrado, o crédito também é enviado para a fila RabbitMQ.
+
+Exemplo de resposta:
+```
+{
+  "numeroCredito": "123",
+  "numeroNfse": "456",
+  "dataConstituicao": "2023-05-10",
+  "valorIssqn": 100.00,
+  "tipoCredito": "ISSQN",
+  "simplesNacional": "Sim",
+  "aliquota": 2.5,
+  "valorFaturado": 4000.00,
+  "valorDeducao": 0.00,
+  "baseCalculo": 4000.00
+}
+```
+Se o crédito não for encontrado, retorna HTTP 404 com mensagem JSON.
+
+
+Tratamento de Erros
+
+Quando um recurso não é encontrado (ResourceNotFoundException), a API retorna um JSON padronizado:
+```
+{
+  "titulo": "Not Found",
+  "status": 404,
+  "mensagem": "Mensagem detalhada do erro"
+}
+```
+
+
+Como Rodar
+
+Pré-requisitos
+Java 17+
+Maven
+Docker (para rodar o PostgreSQL e RabbitMQ facilmente)
+Passos
+
+Clone o repositório:
+```
+git clone https://github.com/seu-usuario/api-creditos.git
+cd api-creditos
+```
+
+
+Suba o PostgreSQL e RabbitMQ via Docker (exemplo simples):
+```
+docker run -d --name postgres-db -e POSTGRES_PASSWORD=senha -p 5433:5432 postgres
+docker run -d --name rabbitmq -p 5672:5672 -p 15672:15672 rabbitmq:3-management
+```
+
+Ajuste as configurações do banco e RabbitMQ no application.properties (porta do PostgreSQL, usuário, senha, etc).
+
+Build e execute a aplicação:
+```
+mvn clean install
+mvn spring-boot:run
+```
+A API estará disponível em http://localhost:8080/api/creditos
+
+Estrutura do Projeto
+```
+src/main/java/com/consultacreditos/consulta
+│
+├── model
+│   └── Credito.java
+├── repository
+│   └── CreditoRepository.java
+├── services
+│   ├── CreditoService.java
+│   ├── CreditoMessageProducer.java
+│   └── CreditoMessageConsumer.java
+├── shared
+│   └── CreditoDTO.java
+├── view
+│   ├── controller
+│   │   └── CreditoController.java
+│   └── model
+│       ├── CreditoRequest.java
+│       └── CreditoResponse.java
+├── handler
+│   └── RestExceptionHandler.java
+├── messages
+│   └── RabbitMQConfig.java
+├── model
+│   ├── error
+│   │   └── ErrorMessage.java
+│   └── exception
+│       └── ResourceNotFoundException.java
+└── ConsultaApplication.java
+```
+Contribuições
+
+Contribuições são bem-vindas! Para contribuir:
+
+Fork o repositório
+Crie uma branch para sua feature (git checkout -b minha-feature)
+Commit suas mudanças (git commit -m 'Minha nova feature')
+Push para a branch (git push origin minha-feature)
+Abra um Pull Request
+
+
+
+
