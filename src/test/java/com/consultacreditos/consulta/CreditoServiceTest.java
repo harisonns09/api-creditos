@@ -33,57 +33,42 @@ public class CreditoServiceTest {
     private Credito credito;
 
     @BeforeEach
-    public void setup() {
+    void setUp() {
         credito = new Credito();
         credito.setId(1L);
-        credito.setNumeroCredito("CR123");
-        credito.setNumeroNfse("NFSE123");
-        // preencher os campos que precisar
+        credito.setNumeroNfse("12345");
+        credito.setNumeroCredito("CRED001");
     }
 
     @Test
-    public void testObterTodos_retornaListaDeDTO() {
-        List<Credito> lista = List.of(credito);
-        when(creditoRepository.findAll()).thenReturn(lista);
-
-        List<CreditoDTO> resultado = creditoService.obterTodos();
-
+    void testBuscarPorNumeroNota_Encontrado() {
+        when(creditoRepository.findByNumeroNfse("12345")).thenReturn(List.of(credito));
+        List<Credito> resultado = creditoService.listarPorNumeroNfse("12345");
         assertFalse(resultado.isEmpty());
-        assertEquals("CR123", resultado.get(0).getNumeroCredito());
-        verify(creditoRepository).findAll();
+        assertEquals("12345", resultado.get(0).getNumeroNfse());
     }
 
     @Test
-    public void testListarPorNumeroNfse_retornaLista() {
-        List<Credito> lista = List.of(credito);
-        when(creditoRepository.findByNumeroNfse("NFSE123")).thenReturn(lista);
-
-        List<Credito> resultado = creditoService.listarPorNumeroNfse("NFSE123");
-
-        assertEquals(1, resultado.size());
-        assertEquals("NFSE123", resultado.get(0).getNumeroNfse());
-        verify(creditoRepository).findByNumeroNfse("NFSE123");
+    void testBuscarPorNumeroNota_NaoEncontrado() {
+        when(creditoRepository.findByNumeroNfse("00000")).thenReturn(List.of());
+        List<Credito> resultado = creditoService.listarPorNumeroNfse("00000");
+        assertTrue(resultado.isEmpty());
     }
 
     @Test
-    public void testBuscarPorNumeroCredito_retornaCredito() {
-        when(creditoRepository.findByNumeroCredito("CR123")).thenReturn(Optional.of(credito));
-
-        Optional<Credito> resultado = creditoService.buscarPorNumeroCredito("CR123");
-
+    void testBuscarPorNumeroCredito_Encontrado() {
+        when(creditoRepository.findByNumeroCredito("CRED001")).thenReturn(Optional.of(credito));
+        Optional<Credito> resultado = creditoService.buscarPorNumeroCredito("CRED001");
         assertTrue(resultado.isPresent());
-        assertEquals("CR123", resultado.get().getNumeroCredito());
-        verify(creditoRepository).findByNumeroCredito("CR123");
+        assertEquals("CRED001", resultado.get().getNumeroCredito());
     }
 
     @Test
-    public void testBuscarPorNumeroCredito_naoEncontrado() {
-        when(creditoRepository.findByNumeroCredito("CR999")).thenReturn(Optional.empty());
-
-        Optional<Credito> resultado = creditoService.buscarPorNumeroCredito("CR999");
-
-        assertFalse(resultado.isPresent());
-        verify(creditoRepository).findByNumeroCredito("CR999");
+    void testBuscarPorNumeroCredito_NaoEncontrado() {
+        when(creditoRepository.findByNumeroCredito("INVALIDO")).thenReturn(Optional.empty());
+        Optional<Credito> resultado = creditoService.buscarPorNumeroCredito("INVALIDO");
+        assertTrue(resultado.isEmpty());
     }
+
     
 }

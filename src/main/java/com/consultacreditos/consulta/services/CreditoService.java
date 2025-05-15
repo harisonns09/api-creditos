@@ -25,16 +25,16 @@ public class CreditoService {
     // Outros métodos de consulta podem ser definidos aqui
     // Exemplo de método para obter todos os créditos   
 
-    public List<CreditoDTO> obterTodos() {
+    // public List<CreditoDTO> obterTodos() {
 
-        List<Credito> creditos = creditoRepository.findAll();
+    //     List<Credito> creditos = creditoRepository.findAll();
 
-        // Transformar um objeto tipo produto em um objeto tipo produtoDTO.
-        return creditos.stream().map(credito -> new ModelMapper()
-        .map(credito, CreditoDTO.class))
-        .collect(Collectors.toList());
+    //     // Transformar um objeto tipo produto em um objeto tipo produtoDTO.
+    //     return creditos.stream().map(credito -> new ModelMapper()
+    //     .map(credito, CreditoDTO.class))
+    //     .collect(Collectors.toList());
 
-    }
+    // }
 
     public List<Credito> listarPorNumeroNfse(String numeroNfse) {
         return creditoRepository.findByNumeroNfse(numeroNfse);
