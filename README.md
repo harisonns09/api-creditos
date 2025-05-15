@@ -1,75 +1,74 @@
-# 📄 API de Consulta de Créditos - ISSQN
+# API de Consulta de Créditos
 
-API REST desenvolvida em Java com Spring Boot para consulta de créditos tributários vinculados a notas fiscais de serviços eletrônicas (NFS-e), especialmente voltada para o imposto ISSQN.
-
----
-
-## 🚀 Funcionalidades
-
-- 🔎 Buscar crédito por número do crédito
-- 🔍 Consultar todos os créditos vinculados a uma NFS-e
-- 📑 Estrutura de dados clara e extensível
-- ✅ Pronta para integração com frontend Angular - [Frontend-creditos](https://github.com/harisonns09/front-api-creditos)
+API REST para consulta de créditos fiscais vinculados a notas fiscais de serviços eletrônicas (NFS-e). Desenvolvida em Spring Boot, a aplicação oferece endpoints para busca e listagem de créditos por número de NFS-e e por número de crédito, além de integração com RabbitMQ para envio e consumo de mensagens.
 
 ---
 
-## 🛠️ Tecnologias Utilizadas
+## Índice
 
-- **Java 17**
-- **Spring Boot 3.x**
-- **Spring Web**
-- **Spring Data JPA**
-- **H2 Database (memória)**
-- **Maven**
-- **Lombok**
-- **Swagger OpenAPI (documentação)**
+- [Funcionalidades](#funcionalidades)
+- [Tecnologias Utilizadas](#tecnologias-utilizadas)
+- [Arquitetura](#arquitetura)
+- [Configuração do RabbitMQ](#configuração-do-rabbitmq)
+- [Endpoints](#endpoints)
+- [Tratamento de Erros](#tratamento-de-erros)
+- [Como Rodar](#como-rodar)
+- [Estrutura do Projeto](#estrutura-do-projeto)
+- [Contribuições](#contribuições)
+- [Licença](#licença)
 
 ---
 
-## 📦 Instalação e Execução
+## Funcionalidades
 
-### Pré-requisitos
+- Consultar créditos por número de NFS-e
+- Buscar crédito por número de crédito
+- Enviar dados de créditos para fila RabbitMQ
+- Consumir mensagens de créditos da fila RabbitMQ
+- Retornar mensagens de erro estruturadas em caso de recurso não encontrado
 
-- [Java 17+](https://www.oracle.com/java/technologies/javase/jdk17-archive-downloads.html)
-- [Maven 3.8+](https://maven.apache.org/download.cgi)
-- (Opcional) IDE como IntelliJ ou VSCode
+---
 
-### Executando localmente
+## Tecnologias Utilizadas
 
-```bash
-# Clone o repositório
-git clone https://github.com/harisonns09/api-creditos.git
-cd api-creditos
+- Java 17+
+- Spring Boot
+- Spring Data JPA
+- ModelMapper
+- RabbitMQ (Spring AMQP)
+- PostgreSQL (banco de dados)
+- Maven (gerenciamento de dependências)
+- Jakarta Persistence API (JPA)
 
-# Compile e rode a aplicação
-./mvnw spring-boot:run
+---
 
-```
+## Arquitetura
 
+A aplicação segue arquitetura REST com camadas divididas em:
 
-A aplicação estará disponível em:
-📍 http://localhost:8080
+- **Model**: Entidade `Credito`
+- **Repository**: Interface para operações com banco de dados `CreditoRepository`
+- **Service**: Lógica de negócio `CreditoService` e integração com RabbitMQ (`CreditoMessageProducer` e `CreditoMessageConsumer`)
+- **Controller**: Camada REST API (`CreditoController`)
+- **DTOs**: Transferência de dados entre camadas (`CreditoDTO`)
+- **Exception Handling**: Tratamento de exceções com `RestExceptionHandler`
+- **Mensageria**: Configuração RabbitMQ (`RabbitMQConfig`)
 
-🔗 Endpoints Principais
-```
-Método	Endpoint	Descrição
-GET	/api/creditos/credito/{id}	Retorna um crédito com base no número
-GET	/api/creditos/{numeroNfse}	Lista os créditos vinculados a uma NFS-e
-```
+---
 
+## Configuração do RabbitMQ
 
-Exemplo de Resposta JSON
-```
-{
-  "numeroCredito": "123456",
-  "numeroNfse": "7891011",
-  "dataConstituicao": "2024-02-25",
-  "valorIssqn": 1500.75,
-  "tipoCredito": "ISSQN",
-  "simplesNacional": "Sim",
-  "aliquota": 5,
-  "valorFaturado": 30000,
-  "valorDeducao": 5000,
-  "baseCalculo": 25000
-}
+O projeto utiliza RabbitMQ para comunicação assíncrona. As principais configurações são:
+
+- Fila: `credito.fila`
+- Exchange: `creditos.exchange` (Direct Exchange)
+- Routing Key: `creditos.routing.key`
+- Conversor de mensagem: JSON via `Jackson2JsonMessageConverter`
+
+As configurações podem ser ajustadas no arquivo `application.properties` ou `application.yml` com as propriedades:
+
+```properties
+spring.rabbitmq.queue=credito.fila
+spring.rabbitmq.exchange=creditos.exchange
+spring.rabbitmq.routingkey=creditos.routing.key
 ```
