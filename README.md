@@ -73,7 +73,7 @@ spring.rabbitmq.exchange=creditos.exchange
 spring.rabbitmq.routingkey=creditos.routing.key
 ```
 
-Endpoints
+## Endpoints
 
 Listar créditos por número NFS-e
 ```
@@ -123,7 +123,7 @@ Exemplo de resposta:
 Se o crédito não for encontrado, retorna HTTP 404 com mensagem JSON.
 
 
-Tratamento de Erros
+## Tratamento de Erros
 
 Quando um recurso não é encontrado (ResourceNotFoundException), a API retorna um JSON padronizado:
 ```
@@ -135,7 +135,7 @@ Quando um recurso não é encontrado (ResourceNotFoundException), a API retorna 
 ```
 
 
-Como Rodar
+## Como Rodar
 
 Pré-requisitos
 Java 17+
@@ -165,7 +165,7 @@ mvn spring-boot:run
 ```
 A API estará disponível em http://localhost:8080/api/creditos
 
-Estrutura do Projeto
+## Estrutura do Projeto
 ```
 src/main/java/com/consultacreditos/consulta
 │
@@ -196,7 +196,7 @@ src/main/java/com/consultacreditos/consulta
 │       └── ResourceNotFoundException.java
 └── ConsultaApplication.java
 ```
-Contribuições
+## Contribuições
 
 Contribuições são bem-vindas! Para contribuir:
 
