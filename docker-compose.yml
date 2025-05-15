@@ -2,13 +2,23 @@ version: '3.8'
 
 services:
 
+  rabbitmq:    
+      image: rabbitmq:3-management
+      container_name: rabbitmq-container
+      ports:
+        - "5672:5672"   # Porta do RabbitMQ
+        - "15672:15672" # Porta de acesso à interface web
+      environment:
+        RABBITMQ_DEFAULT_USER: guest
+        RABBITMQ_DEFAULT_PASS: guest
+
   api-creditos:
     build:
       context: .
       dockerfile: Dockerfile
     container_name: api-creditos
     ports:
-      - "8080:8080"
+      - "8080:8080" 
     environment:
       - SPRING_DATASOURCE_URL=jdbc:postgresql://host.docker.internal:5433/postgres
       - SPRING_DATASOURCE_USERNAME=spostgres
@@ -20,6 +30,7 @@ services:
       - SPRING_RABBITMQ_PASSWORD=guest
     depends_on:
       - postgres
+      - rabbitmq  
   postgres:
     image: postgres:13
     container_name: postgres-db
@@ -32,15 +43,7 @@ services:
     volumes:
       - postgres-data:/var/lib/postgresql/data
 
-  rabbitmq:    
-      image: rabbitmq:3-management
-      container_name: rabbitmq-container
-      ports:
-        - "5672:5672"   # Porta do RabbitMQ
-        - "15672:15672" # Porta de acesso à interface web
-      environment:
-        RABBITMQ_DEFAULT_USER: guest
-        RABBITMQ_DEFAULT_PASS: guest
+  
 
 volumes:
   postgres-data:

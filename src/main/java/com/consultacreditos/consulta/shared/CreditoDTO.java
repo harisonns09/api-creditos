@@ -21,6 +21,9 @@ public class CreditoDTO {
 	private BigDecimal valorDeducao;
 	private BigDecimal baseCalculo;
 
+    public CreditoDTO() {
+    }
+
     // Construtor a partir da entidade
     public CreditoDTO(Credito credito) {
         this.numeroCredito = credito.getNumeroCredito();
