@@ -198,13 +198,7 @@ src/main/java/com/consultacreditos/consulta
 ```
 ## Contribuições
 
-Contribuições são bem-vindas! Para contribuir:
-
-Fork o repositório
-Crie uma branch para sua feature (git checkout -b minha-feature)
-Commit suas mudanças (git commit -m 'Minha nova feature')
-Push para a branch (git push origin minha-feature)
-Abra um Pull Request
+Contribuições são bem-vindas!
 
 
 
