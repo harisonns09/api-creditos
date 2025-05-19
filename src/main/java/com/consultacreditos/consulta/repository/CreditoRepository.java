@@ -16,6 +16,8 @@ public interface CreditoRepository extends JpaRepository<Credito, Integer> {
     List<Credito> findByNumeroNfse(String numeroNfse);
 
     Optional<Credito> findByNumeroCredito(String numeroCredito);
+
+
     
 
 }
