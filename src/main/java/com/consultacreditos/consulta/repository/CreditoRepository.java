@@ -1,5 +1,6 @@
 package com.consultacreditos.consulta.repository;
 
+import java.math.BigDecimal;
 import java.util.List;
 import java.util.Optional;
 
@@ -11,13 +12,16 @@ import com.consultacreditos.consulta.model.Credito;
 public interface CreditoRepository extends JpaRepository<Credito, Integer> {
     // Aqui você pode adicionar métodos personalizados, se necessário
     // Exemplo: List<Credito> findByClienteId(Integer clienteId);
-    // Outros métodos de consulta podem ser definidos aqui  
+    // Outros métodos de consulta podem ser definidos aqui
 
     List<Credito> findByNumeroNfse(String numeroNfse);
 
     Optional<Credito> findByNumeroCredito(String numeroCredito);
 
+    List<Credito> findByValorFaturadoBetween(BigDecimal min, BigDecimal max);
 
-    
+    List<Credito> findByValorFaturadoGreaterThanEqual(BigDecimal min);
+
+    List<Credito> findByValorFaturadoLessThanEqual(BigDecimal max);
 
 }

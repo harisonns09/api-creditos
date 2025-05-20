@@ -1,5 +1,6 @@
 package com.consultacreditos.consulta.services;
 
+import java.math.BigDecimal;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -55,6 +56,18 @@ public class CreditoService {
         }
 
         return false;
+    }
+
+    public List<Credito> filtrarPorValorFaturado(BigDecimal valorMin, BigDecimal valorMax) {
+        if (valorMin == null && valorMax == null) {
+            return creditoRepository.findAll();
+        } else if (valorMin != null && valorMax != null) {
+            return creditoRepository.findByValorFaturadoBetween(valorMin, valorMax);
+        } else if (valorMin != null) {
+            return creditoRepository.findByValorFaturadoGreaterThanEqual(valorMin);
+        } else {
+            return creditoRepository.findByValorFaturadoLessThanEqual(valorMax);
+        }
     }
 
 }

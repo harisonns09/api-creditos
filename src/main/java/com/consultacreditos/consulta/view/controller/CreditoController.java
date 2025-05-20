@@ -1,5 +1,6 @@
 package com.consultacreditos.consulta.view.controller;
 
+import java.math.BigDecimal;
 import java.util.List;
 
 import org.modelmapper.ModelMapper;
@@ -12,12 +13,14 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.consultacreditos.consulta.model.Credito;
 import com.consultacreditos.consulta.services.CreditoMessageProducer;
 import com.consultacreditos.consulta.services.CreditoService;
 import com.consultacreditos.consulta.shared.CreditoDTO;
+import com.consultacreditos.consulta.utils.NotaFiscalPdfGenerator;
 import com.consultacreditos.consulta.view.model.CreditoRequest;
 import com.consultacreditos.consulta.view.model.ValidacaoCredito;
 
@@ -98,6 +101,43 @@ public class CreditoController {
             return ResponseEntity.status(HttpStatus.NOT_FOUND)
                     .body("Crédito com número " + numeroCredito + " não encontrado.");
         }
+    }
+
+    @GetMapping("/filtro")
+    public ResponseEntity<List<CreditoDTO>> filtrarPorValorFaturado(
+            @RequestParam(required = false) BigDecimal valorMin,
+            @RequestParam(required = false) BigDecimal valorMax) {
+
+        List<CreditoDTO> creditos = creditoService.filtrarPorValorFaturado(valorMin, valorMax)
+                .stream()
+                .map(CreditoDTO::new)
+                .toList();
+
+        if (creditos.isEmpty()) {
+            return ResponseEntity.noContent().build();
+        }
+
+        return ResponseEntity.ok(creditos);
+    }
+
+    @GetMapping("/nota-fiscal/{numeroCredito}")
+    public ResponseEntity<byte[]> imprimirNotaFiscal(@PathVariable String numeroCredito) {
+        return creditoService.buscarPorNumeroCredito(numeroCredito)
+                .map(credito -> {
+                    try {
+                        byte[] pdf = NotaFiscalPdfGenerator.gerarNotaFiscalPdf(credito);
+
+                        return ResponseEntity.ok()
+                                .header("Content-Disposition",
+                                        "attachment; filename=nota_fiscal_" + numeroCredito + ".pdf")
+                                .header("Content-Type", "application/pdf")
+                                .body(pdf);
+                    } catch (Exception e) {
+                        return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).<byte[]>build(); // tipo
+                                                                                                        // explícito
+                    }
+                })
+                .orElse(ResponseEntity.<byte[]>notFound().build()); // tipo explícito
     }
 
 }
